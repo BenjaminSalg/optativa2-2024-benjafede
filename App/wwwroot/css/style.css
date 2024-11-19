@@ -1,0 +1,7 @@
+﻿.table td {
+    background: rgb(25, 135, 84, 0.25);
+}
+
+.table tr:nth-child(4n+1) td, .table tr:nth-child(4n+2) td {
+    background: rgb(25, 135, 84, 0.15);
+}

@@ -1,0 +1,21 @@
+﻿@model InicioDto
+@{
+    ViewBag.Title = "No Hay Resultado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="container-fluid col-sm-11">
+    <hr />
+    <h2>Error</h2>
+    <hr />
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger text-center">
+            @TempData["error"]
+        </div>
+        <hr />
+    }
+    <div class="d-flex ms-4 justify-content-center">
+        <a class="btn btn-success me-3" href="@Url.Action("Archivos", "Archivos")">Lista de archivos</a>
+        <a class="btn btn-success me-3" href="@Url.Action("Archivos", "Subir")">Subir archivo</a>
+    </div>
+</section>
