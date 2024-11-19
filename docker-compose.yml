@@ -1,0 +1,54 @@
+networks:
+  mynetworkapi:
+
+services:
+  sqlserverdocker:
+    container_name: sql-server-docker
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+       - 8006:1433
+    environment:
+       - ACCEPT_EULA=Y
+       - MSSQL_SA_PASSWORD=cambiarContrasenia1234
+    volumes:
+      - ./data/db:/var/opt/mssql/data
+    networks:
+        - mynetworkapi
+  minio:
+    image: quay.io/minio/minio:RELEASE.2022-02-18T01-50-10Z
+    volumes:
+      - ./data:/data
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ROOT_USER: 'minio_user'
+      MINIO_ROOT_PASSWORD: 'minio_password'
+      MINIO_ADDRESS: ':9000'
+      MINIO_CONSOLE_ADDRESS: ':9001'
+      MINIO_REGION: 'Corrientes'
+    command: minio server /data
+    networks:
+        - mynetworkapi
+  app:
+    image: 'benjaminsalg01/optativa2-2024-benjafede'
+    build:
+      context: .
+      dockerfile: App/Dockerfile
+    environment:
+      MINIO_ROOT_USER: 'minio_user'
+      MINIO_ROOT_PASSWORD: 'minio_password'
+      MINIO_ENDPOINT: 'minio:9000'
+      MINIO_REGION: 'Corrientes'
+      MINIO_BUCKET: 'archivos'
+      MSSQL_SA_PASSWORD: 'cambiarContrasenia1234'
+      MSSQL_PORT: '1433'
+    ports:
+      - 8081:8080
+    depends_on:
+      - minio
+      - sqlserverdocker
+    networks:
+        - mynetworkapi
+volumes:
+  data:
